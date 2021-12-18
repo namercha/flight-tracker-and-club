@@ -3,7 +3,7 @@ import requests
 
 # 1. Go to the link for the starting Google Sheet and make your own copy of it.
 # Then create a new project on Sheety to work with your copy of the Google sheet.
-SHEETY_PRICES_ENDPOINT = "https://api.sheety.co/888c88ad88603803fc94a32d4429078d/flightDeals/prices"
+SHEETY_PRICES_ENDPOINT = ""
 
 
 class DataManager:
