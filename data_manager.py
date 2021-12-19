@@ -1,9 +1,10 @@
-from pprint import pprint
 import requests
+import os
 
 # 1. Go to the link for the starting Google Sheet and make your own copy of it.
 # Then create a new project on Sheety to work with your copy of the Google sheet.
-SHEETY_PRICES_ENDPOINT = ""
+SHEETY_PRICES_ENDPOINT = os.environ["SHEETY_PRICES_ENDPOINT"]
+SHEETY_BEARER_TOKEN = os.environ["SHEETY_BEARER_TOKEN"]
 
 
 class DataManager:
@@ -13,7 +14,10 @@ class DataManager:
 
     def get_destination_data(self):
         # 2. Now use the Sheety API to GET all the data in that sheet and print it out.
-        response = requests.get(url=SHEETY_PRICES_ENDPOINT)
+        sheety_auth = {
+            "Authorization": f"Bearer {SHEETY_BEARER_TOKEN}"
+        }
+        response = requests.get(url=SHEETY_PRICES_ENDPOINT, headers=sheety_auth)
         results = response.json()
         self.destination_data = results['prices']
         return self.destination_data
@@ -27,8 +31,12 @@ class DataManager:
                     "iataCode": city["iataCode"]
                 }
             }
+            sheety_auth = {
+                "Authorization": f"Bearer {SHEETY_BEARER_TOKEN}"
+            }
             response = requests.put(
                 url=f"{SHEETY_PRICES_ENDPOINT}/{city['id']}",
-                json=new_data
+                json=new_data,
+                headers=sheety_auth
             )
             print(response.text)

@@ -2,6 +2,7 @@
 # program requirements.
 from data_manager import DataManager
 from flight_search import FlightSearch
+from notification_manager import NotificationManager
 from datetime import datetime, timedelta
 from pprint import pprint
 
@@ -13,6 +14,8 @@ data_manager = DataManager()
 sheet_data = data_manager.get_destination_data()
 # pprint(sheet_data)
 flight_search = FlightSearch()
+
+notification_manager = NotificationManager()
 
 # 5. In main.py check if sheet_data contains any values for the "iataCode" key.
 # If not, then the IATA Codes column is empty in the Google Sheet.
@@ -32,10 +35,23 @@ if sheet_data[0]["iataCode"] == "":
 tomorrows_date = datetime.now() + timedelta(days=1)
 six_months_from_today = datetime.now() + timedelta(days=(30 * 6))
 
-for city in sheet_data:
+for item in sheet_data:
     flight = flight_search.check_flights(
         origin_city_code=ORIGIN_CITY_IATA,
-        destination_city_code=city["iataCode"],
+        destination_city_code=item["iataCode"],
         from_date=tomorrows_date,
         to_date=six_months_from_today
     )
+    # The final in part 1 step is to check if any of the flights found are cheaper than the Lowest Price listed in the
+    # Google Sheet. If so, then we should use the Twilio API to send an SMS with enough information to book the flight.
+    # You should use the NotificationManager for this job.
+    if flight is not None:
+        if flight.price < item["lowestPrice"]:
+            notification_manager.send_text_message(
+                message=f"Low price alert! "
+                        f"Only ${flight.price} "
+                        f"to fly from {flight.origin_city}-{flight.origin_airport} "
+                        f"to {flight.destination_city}-{flight.destination_airport}, "
+                        f"from {flight.out_date} "
+                        f"to {flight.return_date}."
+            )
