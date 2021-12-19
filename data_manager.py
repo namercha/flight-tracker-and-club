@@ -13,6 +13,7 @@ SHEETY_USERS_ENDPOINT = os.environ["SHEETY_USERS_ENDPOINT"]
 class DataManager:
     # This class is responsible for talking to the Google Sheet.
     def __init__(self):
+        self.customer_data = None
         self.destination_data = {}
 
     def get_destination_data(self):
@@ -77,5 +78,11 @@ class DataManager:
         else:
             print("The emails don't match. Cannot sign you up, Sorry.")
 
-
-
+    def get_customer_emails(self):
+        sheety_auth = {
+            "Authorization": f"Bearer {SHEETY_BEARER_TOKEN}"
+        }
+        response = requests.get(url=SHEETY_USERS_ENDPOINT, headers=sheety_auth)
+        data = response.json()
+        self.customer_data = data["users"]
+        return self.customer_data

@@ -37,6 +37,8 @@ if sheet_data[0]["iataCode"] == "":
 tomorrows_date = datetime.now() + timedelta(days=1)
 six_months_from_today = datetime.now() + timedelta(days=(30 * 6))
 
+data_manager.get_user_input()
+
 for item in sheet_data:
     flight = flight_search.check_flights(
         origin_city_code=ORIGIN_CITY_IATA,
@@ -49,14 +51,24 @@ for item in sheet_data:
     # You should use the NotificationManager for this job.
     if flight is not None:
         if flight.price < item["lowestPrice"]:
-            notification_manager.send_text_message(
-                message=f"Low price alert! "
-                        f"Only ${flight.price} "
-                        f"to fly from {flight.origin_city}-{flight.origin_airport} "
-                        f"to {flight.destination_city}-{flight.destination_airport}, "
-                        f"from {flight.out_date} "
-                        f"to {flight.return_date}."
-            )
+            message_body = f"Low price alert! "\
+                           f"Only ${flight.price} "\
+                           f"to fly from {flight.origin_city}-{flight.origin_airport} "\
+                           f"to {flight.destination_city}-{flight.destination_airport}, "\
+                           f"from {flight.out_date} "\
+                           f"to {flight.return_date}."
 
+            notification_manager.send_text_message(message=message_body)
+            users = data_manager.get_customer_emails()
+            email_list = [item["email"] for item in users]
+            names = [item["firstName"] for item in users]
 
-data_manager.get_user_input()
+            if flight.layovers > 0:
+                message_body += f"\nFlight has {flight.stop_overs} stop over, via {flight.via_city}."
+                print(message_body)
+
+            # Not a simple way to generate this link. link = f"https://www.google.com/travel/flights?hl=en#flt={
+            # flight.origin_airport}.{flight.destination_airport}.{flight.out_date}*{flight.destination_airport}.{
+            # flight.origin_airport}.{flight.return_date}"
+
+            notification_manager.send_email(email_list, message_body)
