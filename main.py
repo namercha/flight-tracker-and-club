@@ -5,6 +5,8 @@ from flight_search import FlightSearch
 from notification_manager import NotificationManager
 from datetime import datetime, timedelta
 from pprint import pprint
+from dotenv import load_dotenv
+load_dotenv()
 
 ORIGIN_CITY_IATA = "JFK"
 
@@ -55,3 +57,6 @@ for item in sheet_data:
                         f"from {flight.out_date} "
                         f"to {flight.return_date}."
             )
+
+
+data_manager.get_user_input()

@@ -1,6 +1,8 @@
 import requests
 import os
 from flight_data import FlightData
+from dotenv import load_dotenv
+load_dotenv()
 
 TEQUILA_ENDPOINT = "https://tequila-api.kiwi.com"
 TEQUILA_API_KEY = os.environ["TEQUILA_API_KEY"]

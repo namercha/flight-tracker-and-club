@@ -1,8 +1,8 @@
-## Flight Tracker
+# Flight Tracker
 
 This program is to use a combination of multiple APIs to find a good flight deal. 
 
-### Part 1
+## Part 1
 There is a Google sheet that has the location of the places you want to visit and a price cutoff (which is the historical low price). That data will be fed into a flight search API every day.
 When a price is found that matches the lowest price and destinations, an SMS will be sent with the deal details.
 
@@ -18,3 +18,7 @@ Tequila Flight Search API Documentation - https://tequila.kiwi.com/portal/docs/t
 
 Twilio SMS API - https://www.twilio.com/docs/sms
 
+## Part 2
+The second part of this project will now start signing up users via a text based input and then email them with good flight deals.
+There will be a second sheet within the same Google sheet spreadsheet that will store the users' name and email.
+We will use the SMTP module to send emails to the users with the good flight deals. 
